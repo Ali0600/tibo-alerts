@@ -30,7 +30,8 @@ jobs:
       - run: npm run verify:bundle
       - run: npm run build
       - run: npm run verify:hosted
-      - run: npm run keys -- --write
+      - id: keys
+        run: npm run keys -- --write
       - name: Build and start isolated SQLite app
         run: docker compose up --build --wait --wait-timeout=90 app
       - name: Verify database and closed launch gates
@@ -44,5 +45,5 @@ jobs:
       - name: Build isolated source worker (includes no-network import check)
         run: docker compose --profile worker build worker
       - name: Stop test containers
-        if: always()
+        if: always() && steps.keys.outcome == 'success'
         run: docker compose down --volumes

@@ -90,7 +90,12 @@ try {
   const run = (file) =>
     spawnSync(
       process.execPath,
-      [join(original, 'node_modules/tsx/dist/cli.mjs'), '--test', file],
+      [
+        join(original, 'node_modules/tsx/dist/cli.mjs'),
+        '--test',
+        '--test-reporter=tap',
+        file,
+      ],
       {
         cwd: target,
         encoding: 'utf8',

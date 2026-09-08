@@ -55,3 +55,11 @@ A healthy server after restart does not prove its data survived.
 **Why it came up:** repeating an empty-database health check could pass even if Docker discarded storage. CI now writes a unique timestamp, recreates the container, and checks the exact stored value.
 
 **Takeaway:** write an observable marker before crossing a persistence boundary, then read the same marker afterward.
+
+## Pin machine-readable command output
+
+A tool's default display can change even when the command still works.
+
+**Why it came up:** Node 24 used a different test reporter from local Node 22, so the mutation checker could not recognize the expected failing test. It now requests TAP explicitly and is checked on both versions.
+
+**Takeaway:** when code parses another tool's output, select a stable format explicitly and verify the effective runtime version.
