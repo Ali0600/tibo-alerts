@@ -1,0 +1,65 @@
+services:
+  app:
+    build:
+      context: .
+      target: app
+    ports:
+      - '127.0.0.1:${APP_PORT:-3000}:3000'
+    environment:
+      APP_ORIGIN: ${APP_ORIGIN:-http://localhost:3000}
+      DATABASE_PATH: /data/tibo.sqlite
+      DATA_KEY: ${DATA_KEY:?Run npm run keys -- --write first}
+      SCANNER_SECRET: ${SCANNER_SECRET:?Missing scanner credential}
+      DELIVERY_SECRET: ${DELIVERY_SECRET:?Missing delivery credential}
+      BREVO_WEBHOOK_SECRET: ${BREVO_WEBHOOK_SECRET:?Missing webhook credential}
+      EXPECTED_SOURCE_ID: ${EXPECTED_SOURCE_ID:-}
+      ALERTS_ENABLED: ${ALERTS_ENABLED:-false}
+      SOURCE_VERIFIED: ${SOURCE_VERIFIED:-false}
+      DELIVERY_VERIFIED: ${DELIVERY_VERIFIED:-false}
+      EMAIL_ENABLED: ${EMAIL_ENABLED:-false}
+      PUSH_ENABLED: ${PUSH_ENABLED:-false}
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+      REPOSITORY_URL: https://github.com/Ali0600/tibo-alerts
+      TRUSTED_PROXY_IP_HEADER: ${TRUSTED_PROXY_IP_HEADER:-}
+      VERIFICATION_MODE: ${VERIFICATION_MODE:-false}
+      TEST_EMAIL: ${TEST_EMAIL:-}
+    volumes:
+      - sqlite-data:/data
+    tmpfs:
+      - /tmp
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    restart: unless-stopped
+  worker:
+    profiles: [worker]
+    build:
+      context: .
+      target: worker
+    depends_on:
+      app:
+        condition: service_healthy
+    environment:
+      APP_ORIGIN: ${APP_ORIGIN:-http://localhost:3000}
+      INTERNAL_API_ORIGIN: http://app:3000
+      SCANNER_SECRET: ${SCANNER_SECRET:?Missing scanner credential}
+      DELIVERY_SECRET: ${DELIVERY_SECRET:?Missing delivery credential}
+      TWITTER_AUTH_TOKEN: ${TWITTER_AUTH_TOKEN:-}
+      EXPECTED_SOURCE_ID: ${EXPECTED_SOURCE_ID:-}
+      EMAIL_PROVIDER: ${EMAIL_PROVIDER:-brevo}
+      EMAIL_FROM: ${EMAIL_FROM:-}
+      BREVO_API_KEY: ${BREVO_API_KEY:-}
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
+      VAPID_SUBJECT: ${VAPID_SUBJECT:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    restart: unless-stopped
+volumes:
+  sqlite-data:

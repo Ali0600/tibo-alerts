@@ -1,0 +1,1 @@
+CREATE INDEX `job_event_state` ON `jobs` (`event_id`,`state`);
