@@ -1,0 +1,46 @@
+name: Scan and deliver
+on:
+  schedule:
+    - cron: '3-58/5 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: tibo-background-worker
+  cancel-in-progress: false
+jobs:
+  worker:
+    if: vars.WORKER_ENABLED == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: notifications
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24.20.0'
+          package-manager-cache: false
+      - run: npm ci
+      - name: Install pinned source reader
+        id: source
+        continue-on-error: true
+        timeout-minutes: 3
+        run: npm run source:setup
+      - name: Check source and dispatch due notifications
+        if: always() && steps.source.outcome != 'cancelled'
+        run: npm run worker
+        env:
+          APP_ORIGIN: ${{ vars.APP_ORIGIN }}
+          SCANNER_SECRET: ${{ secrets.SCANNER_SECRET }}
+          DELIVERY_SECRET: ${{ secrets.DELIVERY_SECRET }}
+          TWITTER_AUTH_TOKEN: ${{ secrets.TWITTER_AUTH_TOKEN }}
+          EXPECTED_SOURCE_ID: ${{ vars.EXPECTED_SOURCE_ID }}
+          EMAIL_PROVIDER: brevo
+          EMAIL_FROM: ${{ vars.EMAIL_FROM }}
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          VAPID_PUBLIC_KEY: ${{ vars.VAPID_PUBLIC_KEY }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          VAPID_SUBJECT: ${{ vars.VAPID_SUBJECT }}

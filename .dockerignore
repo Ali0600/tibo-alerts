@@ -1,0 +1,13 @@
+.git
+.env*
+!.env.example
+node_modules
+dist
+.source-reader
+.wrangler
+.artifacts
+data
+outputs
+work
+*.sqlite*
+*.tsbuildinfo
