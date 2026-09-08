@@ -2,7 +2,7 @@
 
 An unofficial, open-source Codex reset watcher for [@thsottiaux](https://x.com/thsottiaux). Get an announcement, a reminder at a clearly stated reset time, or both — by email or browser push. No SMS, paid source fallback, X embeds, analytics, or OpenAI account access.
 
-**Status: implemented, awaiting live source and notification acceptance.** A build, HTTP 200 or provider acceptance is not proof that genuine posts or notifications arrive. Signup and ordinary delivery start disabled. Follow [operations and launch checks](docs/OPERATIONS.md) before enabling them.
+**Status: implemented; [private owner preview](https://tibo-alerts.a-hassan0600.chatgpt.site) published, awaiting live source and notification acceptance.** A build, HTTP 200 or provider acceptance is not proof that genuine posts or notifications arrive. Signup and ordinary delivery start disabled. Follow [operations and launch checks](docs/OPERATIONS.md) before enabling them.
 
 ## Features
 
@@ -80,6 +80,8 @@ npm run source:check -- --smoke
 ```
 
 Tests use real SQLite migrations and synthetic public-post fixtures, with stubbed notification providers. The mutation check makes isolated temporary copies, disables critical guards, and requires their regression tests to fail. No test sends to a real person. The source import smoke makes no X requests and does not count as live source verification.
+
+Current installation details are in [deployment notes](docs/DEPLOYMENT.md).
 
 See [architecture](docs/ARCHITECTURE.md), [operations](docs/OPERATIONS.md), [decisions](docs/DECISIONS.md), [learning log](docs/learnings.md), and [remaining acceptance work](PLAN.md). Contributions must include relevant tests and docs. Third-party GitHub Actions and Docker base images are pinned to immutable revisions.
 

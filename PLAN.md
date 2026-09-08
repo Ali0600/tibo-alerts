@@ -21,8 +21,8 @@
 - [x] Both runtime bundle checks include all initial JavaScript plus HTML and stay below 150,000 gzip bytes.
 - [x] Clean Docker app startup, database health and exact data persistence across container recreation observed locally.
 - [x] Mobile/browser UI and WebMCP valid/invalid timezone checks completed.
-- [ ] Final production builds, bundle gate and remote CI green on the merged source.
-- [ ] Private Sites version published successfully.
+- [x] Final production builds and bundle gate pass; remote CI passed for the implementation merged in PR #1.
+- [x] Private Sites version published successfully with launch gates disabled (2026-09-08).
 
 ## Operator acceptance — required before public operation
 
